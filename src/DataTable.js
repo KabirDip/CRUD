@@ -3,37 +3,16 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot, doc} from "firebase/firestore";
 import { db} from "./Firebase.js";
 
-export default function DataTable(){
-
-    const [users, setUsers]=useState([]);
+export default function DataTable({editing, users}){
 
 
-    useEffect(() => {
-        const fetchData = onSnapshot(
-            collection(db, "obj"),
-            (snapShot) => {
-                let listt = [];
-                snapShot.docs.forEach((doc) => {
-                    listt.push({ id: doc.id, ...doc.data() });
-                });
-                setUsers(listt);
-                console.log(listt)
-            },
-            (error) => {
-                console.log(error);
-            }
-        );
-        return () => {
-            fetchData();
-        };
-    }, []);
 
     const handleDelete = (id)=>{
         deleteDoc(doc(db, "obj", id));
         
     }
 
-    
+
     
     
     // const handleUpdate = async (item) => {
@@ -72,7 +51,7 @@ export default function DataTable(){
                             <td>{user.userPhone}</td>
                             <td>
                                 <button onClick={()=>handleDelete(user.id)}>Delete</button>
-                                <button>Edit</button>
+                                <button onClick={()=>editing(user.id)}>Edit</button>
                             </td>
                         </tr>
                     ))
